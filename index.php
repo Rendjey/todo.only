@@ -1,10 +1,17 @@
 <?php
+    $error = "";
+
     $db = mysqli_connect('localhost', 'root', '', 'todo');
     if (isset($_POST['submit'])) {
         $task = $_POST['task'];
+        if(empty($task)) {
+            $error = "You mast fill in the task!";
+        } else {
+            mysqli_query($db, "INSERT INTO tasks (task) VALUES ('$task')");
+            header('location: index.php');
+        }
 
-        mysqli_query($db, "INSERT INTO tasks (task) VALUES ('$task')");
-        header('location: index.php');
+
     }
 
     $tasks = mysqli_query($db, "SELECT * FROM tasks");
@@ -23,6 +30,9 @@
     <h2>Todo list with PHP and MySQL </h2>
 </div>
 <form action="index.php" method="POST">
+    <?php if(isset($error)) { ?>
+        <p><?php echo $error; ?></p>
+    <?php } ?>
     <input type="text" name="task" class="task_input">
     <button type="submit" class="add_btn" name="submit">Add Task</button>
 </form>
